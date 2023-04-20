@@ -1,8 +1,8 @@
 /*
- * driver.c
+ * driver.cpp
  *
  * Created: 4/20/2023 5:28:27 AM
- *  Author: Omar
+ * Author: Omar Elshopky
  */ 
 #include "../include/driver.h"
 #include "../include/leds.h"

@@ -40,8 +40,8 @@ http://arduiniana.org.
 // 
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
-#include <Arduino.h>
-#include <SoftwareSerial.h>
+#include "../../include/lib/cores/Arduino.h"
+#include "../../include/lib/SoftwareSerial.h"
 #include <util/delay_basic.h>
 
 //
