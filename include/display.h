@@ -65,6 +65,6 @@ const unsigned char motion_symbol_map[] = {
  */
 void initialize_display();
 void create_symbols();
-void display_sensors_data(unsigned char temperature, bool smoke_rate, bool motion_detection);
+void display_sensors_data(unsigned char temperature, bool smoke_detected, bool motion_detected);
 
 #endif /* DISPLAY_H_ */
