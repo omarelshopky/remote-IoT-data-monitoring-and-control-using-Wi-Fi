@@ -3,15 +3,18 @@
 #include "../include/display.h"
 #include "../include/timer.h"
 #include "../include/sensors.h"
+#include "../include/webserver.h"
 
 void initialize_device() {
 	initialize_leds();
 	initialize_display();
 	initialize_sensors();
+	initialize_webserver();
 	start_2s_timer();
 }
 
 void run_device() {
+	handle_clients();
 	switch_led(FIRST_LED, TURN_ON);
 	switch_led(SECOND_LED, TURN_ON);
 }

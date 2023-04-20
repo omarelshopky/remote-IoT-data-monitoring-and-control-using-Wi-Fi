@@ -19,7 +19,7 @@ void initialize_smoke_sensor() {
 
 void initialize_motion_sensor() {
     // TODO: Ahmed
-    // Should use interrupt (INT0) for data read
+    // Should use interrupt for data read
 }
 
 unsigned char read_temperature() {
