@@ -120,9 +120,49 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="include\leds.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\libraries\LiquidCrystal\src\LiquidCrystal.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\libraries\SoftwareSerial\src\SoftwareSerial.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\driver.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\leds.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\driver.c">
+      <SubType>compile</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="include\" />
+    <Folder Include="include\libraries\" />
+    <Folder Include="include\libraries\LiquidCrystal\" />
+    <Folder Include="include\libraries\LiquidCrystal\src\" />
+    <Folder Include="include\libraries\SoftwareSerial\" />
+    <Folder Include="include\libraries\SoftwareSerial\src\" />
+    <Folder Include="src\" />
+    <Folder Include="src\libraries\" />
+    <Folder Include="src\libraries\LiquidCrystal\" />
+    <Folder Include="src\libraries\LiquidCrystal\src\" />
+    <Folder Include="src\libraries\SoftwareSerial\" />
+    <Folder Include="src\libraries\SoftwareSerial\src\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\libraries\LiquidCrystal\src\LiquidCrystal.cpp">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\libraries\SoftwareSerial\src\SoftwareSerial.cpp">
+      <SubType>compile</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
 </Project>
