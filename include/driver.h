@@ -1,11 +1,3 @@
-/*
- * driver.h
- *
- * Created: 4/20/2023 5:28:15 AM
- *  Author: Omar Elshopky
- */ 
-
-
 #ifndef RUNNER_H_
 #define RUNNER_H_
 

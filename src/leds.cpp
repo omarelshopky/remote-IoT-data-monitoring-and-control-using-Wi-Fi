@@ -1,9 +1,3 @@
-/*
- * leds.cpp
- *
- * Created: 4/20/2023 5:27:08 AM
- * Author: Omar Elshopky
- */ 
 #include "../include/leds.h"
 
 

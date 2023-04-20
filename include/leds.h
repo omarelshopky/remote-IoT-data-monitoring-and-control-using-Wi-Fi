@@ -1,11 +1,3 @@
-/*
- * leds.h
- *
- * Created: 4/20/2023 5:26:57 AM
- *  Author: Omar Elshopky
- */ 
-
-
 #ifndef LEDS_H_
 #define LEDS_H_
 
@@ -34,5 +26,6 @@ void initialize_leds();
 
 // Switch specific led on/off
 void switch_led(unsigned char led, unsigned char mode);
+
 
 #endif /* LEDS_H_ */
