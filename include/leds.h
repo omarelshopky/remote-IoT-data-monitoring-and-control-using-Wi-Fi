@@ -1,14 +1,14 @@
 #ifndef LEDS_H_
 #define LEDS_H_
 
-/**
- ** Includes
- **/
+/*
+ * Includes
+ */
 #include <avr/io.h>
 
-/**
- ** Defines
- **/
+/*
+ * Defines
+ */
 #define LEDS_PORT_DIRECTION DDRD
 #define LEDS_PORT PORTD
 #define LED1_PIN 7
@@ -18,9 +18,9 @@
 #define TURN_OFF 0x0
 #define TURN_ON 0x1
 
-/**
- ** Function definitions
- **/
+/*
+ * Function definitions
+ */
 // Initialize the two LEDs
 void initialize_leds();
 

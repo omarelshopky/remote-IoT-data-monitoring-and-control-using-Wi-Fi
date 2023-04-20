@@ -3,23 +3,31 @@
 
 void initialize_display() {
 	lcd.begin(16, 2);
+	create_symbols();
 }
 
-void display(unsigned char temperature, bool smoke_detected, bool motion_detected) {
+void create_symbols() {
+	lcd.createChar(TEMP_SYMBOL, temp_symbol_map);
+	lcd.createChar(SMOKE_SYMBOL, smoke_symbol_map);
+	lcd.createChar(MOTION_SYMBOL, motion_symbol_map);
+}
+
+void display_sensors_data(unsigned char temperature, bool smoke_detected, bool motion_detected) {
 	lcd.clear();
-	lcd.print("T: ");
+	lcd.print("Temp: ");
 	lcd.print(temperature);
-	lcd.print("'C ");
-	
-	lcd.setCursor(1, 0);
-	
-	if (smoke_detected && motion_detected) {
-		lcd.print("Smoke & Motion Detected");
-	} 
-	else if (smoke_detected) {
-		lcd.print("Smoke Detected");
-	} 
-	else if (motion_detected) {
-		lcd.print("Motion Detected");
+	lcd.write(TEMP_SYMBOL);
+	lcd.print("C");
+
+	if (smoke_detected) {
+		lcd.setCursor(0, 1);
+		lcd.write(SMOKE_SYMBOL);
+		lcd.print(" Smoke");
+	}
+
+	if (motion_detected) {
+		lcd.setCursor(8, 1);
+		lcd.write(MOTION_SYMBOL);
+		lcd.print(" Motion");
 	}
 }

@@ -1,9 +1,9 @@
 #ifndef RUNNER_H_
 #define RUNNER_H_
 
-/**
- ** Function definitions
- **/
+/*
+ * Function definitions
+ */
 // Initialize all the device's peripherals
 void initialize_device();
 
