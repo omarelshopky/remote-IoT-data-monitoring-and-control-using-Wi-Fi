@@ -9,12 +9,12 @@
 /*
  * Defines
  */
-#define RS 13
-#define EN 12
-#define D4 11
-#define D5 10
-#define D6 9
-#define D7 8
+#define RS 8
+#define EN 9
+#define D4 10
+#define D5 11
+#define D6 12
+#define D7 13
 #define TEMP_SYMBOL (unsigned char)0
 #define SMOKE_SYMBOL (unsigned char)1
 #define MOTION_SYMBOL (unsigned char)2
