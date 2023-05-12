@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang='en'>
+	<head>
+		<meta charset='UTF-8' />
+		<meta http-equiv='X-UA-Compatible' content='IE=edge' />
+		<meta name='viewport' content='width=device-width, initial-scale=1.0' />
+		<link
+			href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css'
+			rel='stylesheet'
+			integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC'
+			crossorigin='anonymous'
+		/>
+		<link
+			rel='stylesheet'
+			href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
+			integrity='sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=='
+			crossorigin='anonymous'
+			referrerpolicy='no-referrer'
+		/>
+		<script src='https://unpkg.com/boxicons@2.1.4/dist/boxicons.js'></script>
+		<title>Control Panel</title>
+		<style>
+			/* Position the alerts on top of the page content */
+			.container {
+				position: relative;
+				z-index: 1;
+			}
+
+			/* Stack the alerts vertically and add a margin between them */
+			.alert-wrapper {
+				position: absolute;
+				top: 0;
+				right: 0;
+				left: 0;
+				z-index: 2;
+				display: flex;
+				flex-direction: column-reverse;
+				align-items: center;
+				padding: 1rem;
+			}
+
+			.alert {
+				margin-top: 0.5rem;
+				margin-bottom: 0.5rem;
+			}
+		</style>
+	</head>
+	<body>
+		<header class='navbar navbar-dark sticky-top bg-dark flex-md-nowrap py-4 shadow mb-3'>
+			<h2 class='text-white col-md-12 text-center my-0'>IoT Control Panel</h2>
+		</header>
+		<div class='container'>
+			<div class='alert-wrapper'></div>
+			<div class='row'>
+				<div class='col'>
+					<div class='card text-center'>
+						<div class='card-body'>
+							<h1 class='card-title'>
+								<i class='fa-solid fa-temperature-three-quarters me-2'></i>Temperature
+							</h1>
+							<h3 class='card-subtitle mb-2 text-muted' id='currentTemperatureValue'></h3>
+							<canvas id='temperatureChart'></canvas>
+						</div>
+					</div>
+				</div>
+				<div class='col'>
+					<div class='card text-center'>
+						<div class='card-body'>
+							<h1 class='card-title'><i class='fa-solid fa-smog me-2'></i>Smoke</h1>
+							<h3 class='card-subtitle mb-2 text-muted' id='currentSmokeValue'></h3>
+							<canvas id='smokeChart'></canvas>
+						</div>
+					</div>
+				</div>
+				<div class='col'>
+					<div class='card text-center'>
+						<div class='card-body'>
+							<h1 class='card-title'><i class='fa-solid fa-person-walking me-2'></i>Motion</h1>
+							<h3 class='card-subtitle mb-2 text-muted' id='currentMotionValue'></h3>
+							<canvas id='motionChart'></canvas>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class='row mt-5'>
+				<h3 class='text-center'>Control Leds</h3>
+				<div class='col align-items-center d-flex justify-content-center'>
+					<button
+						type='button'
+						class='btn btn-success btn-lg'
+						onclick='LedButtonHandler().bind(this)()'
+						data-name='Led-1'
+					>
+						Led-1: ON
+					</button>
+				</div>
+				<div class='col align-items-center d-flex justify-content-center'>
+					<button
+						type='button'
+						class='btn btn-success btn-lg'
+						onclick='LedButtonHandler().bind(this)()'
+						data-name='Led-2'
+					>
+						Led-2: ON
+					</button>
+				</div>
+			</div>
+		</div>
+		<script
+			src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js'
+			integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM'
+			crossorigin='anonymous'
+		></script>
+		<script src='https://cdn.jsdelivr.net/npm/chart.js'></script>
+
+		<script>
+			const UPDATE_INTERVAL = 1000 * 2; // 2 Ms
+			const MAX_DATA_SET_LENGTH = 15;
+			const ServerFetchSensorsEndpoint = '/fetch';
+			const commonOptions = { scales: { y: { beginAtZero: true } } };
+			const temperatureChart = new Chart(document.getElementById('temperatureChart'), {
+				type: 'line',
+				data: { datasets: [{ label: 'Temperature History' }] },
+				options: commonOptions,
+			});
+			const smokeChart = new Chart(document.getElementById('smokeChart'), {
+				type: 'line',
+				data: { datasets: [{ label: 'Smoke History' }] },
+				options: commonOptions,
+			});
+			const motionChart = new Chart(document.getElementById('motionChart'), {
+				type: 'line',
+				data: { datasets: [{ label: 'Motion History' }] },
+				options: commonOptions,
+			});
+			const updateChart = (chart, label, entry) => {
+				if (chart.data.datasets[0].data.length > MAX_DATA_SET_LENGTH) {
+					chart.data.datasets[0].data.shift();
+					chart.data.labels.shift();
+				}
+				chart.data.labels.push(label);
+				chart.data.datasets[0].data.push(entry);
+				chart.update();
+			};
+			setInterval(async () => {
+				const rawResponse = await fetch(ServerFetchSensorsEndpoint, { method: 'GET' });
+				const response = await rawResponse.text();
+				const [temperature, smoke, motion] = response.split(',').map((entry) => parseInt(entry));
+				const date = new Date().toLocaleTimeString();
+				updateChart(temperatureChart, date, temperature);
+				updateChart(smokeChart, date, smoke);
+				updateChart(motionChart, date, motion);
+				document.getElementById('currentTemperatureValue').innerHTML = `${temperature} °C`;
+				document.getElementById('currentSmokeValue').innerHTML = `${smoke ? 'Smoke Detected' : 'No Smoke'}`;
+				document.getElementById('currentMotionValue').innerHTML = `${smoke ? 'Motion Detected' : 'No Motion'}`;
+
+				if (temperature > 30) showAlert('Warning! Temperature value exceeded 30 degrees!!');
+				if (smoke) showAlert('Warning! An existence of smoke detected!!');
+			}, UPDATE_INTERVAL);
+
+			const showAlert = (message) => {
+				const alert = document.createElement('div');
+				alert.classList.add('alert', 'alert-danger', 'alert-dismissible', 'fade', 'show');
+				alert.innerHTML = `${message}<button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>`;
+				document.querySelector('.alert-wrapper').appendChild(alert);
+				setTimeout(() => alert.remove(), 5000);
+			}
+		</script>
+		<script>
+			const LedStates = { On: 'ON', Off: 'OFF' };
+			const AppState = { 'Led-1': LedStates.On, 'Led-2': LedStates.On };
+
+			const InvertState = (current) => (current == LedStates.On ? LedStates.Off : LedStates.On);
+			const InformServer = async (ledId, command) => {
+				const response = await fetch(`/leds/${ledId}/${command}`, { method: 'GET' });
+			};
+
+			const LedButtonHandler = () => {
+				return async function () {
+					const { dataset } = this;
+					if (!dataset['name'] || !AppState[dataset['name']])
+						return console.error('No Reference To State Found Or Found With Wrong key');
+					const newState = InvertState(AppState[dataset['name']]);
+					await InformServer(
+						dataset['name'].split('-').pop(),
+						AppState[dataset['name']] === LedStates.Off ? 'turn_on' : 'turn_off'
+					);
+					AppState[dataset['name']] = newState;
+					if (newState === LedStates.Off) this.classList.replace('btn-success', 'btn-danger');
+					else this.classList.replace('btn-danger', 'btn-success');
+					this.innerHTML = `${dataset['name']}: ${newState}`;
+				};
+			};
+		</script>
+		<!-- <script>
+			const ALERT_TIMEOUT = 5000;
+			const source = new EventSource('/sse');
+			const alertWrapper = document.querySelector('.alert-wrapper');
+
+			source.addEventListener('hello', (event) => {
+				console.log('Received hello event:', event.data);
+				const message = JSON.parse(event.data).message;
+				const alert = document.createElement('div');
+				alert.classList.add('alert', 'alert-danger', 'alert-dismissible', 'fade', 'show');
+				alert.innerHTML = `${message}<button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>`;
+				alertWrapper.appendChild(alert);
+				setTimeout(() => alert.remove(), ALERT_TIMEOUT);
+			});
+		</script> -->
+	</body>
+</html>

@@ -4,12 +4,21 @@
 void initialize_display() {
 	lcd.begin(16, 2);
 	create_symbols();
+	print_init_message();
 }
 
 void create_symbols() {
 	lcd.createChar(TEMP_SYMBOL, temp_symbol_map);
 	lcd.createChar(SMOKE_SYMBOL, smoke_symbol_map);
 	lcd.createChar(MOTION_SYMBOL, motion_symbol_map);
+}
+
+void print_init_message() {
+	lcd.setCursor(0, 0);
+	lcd.print("IoT Data Monitor");
+
+	lcd.setCursor(0, 1);
+	lcd.print("Initializing...");
 }
 
 void display_sensors_data(unsigned char temperature, bool smoke_detected, bool motion_detected) {
