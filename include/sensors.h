@@ -15,14 +15,19 @@
 #define MOTION_SENSOR_PIN INT0      // D2
 
 /*
+ * Globals
+ */
+extern unsigned char temperature;
+extern bool smoke_detected, motion_detected;
+
+/*
  * Function definitions
  */
 void initialize_sensors();
 void initialize_temperature_sensor();
 void initialize_smoke_sensor();
 void initialize_motion_sensor();
-unsigned char read_temperature();
-bool detect_smoke_existence();
-bool detect_motion_existence();
+void read_temperature();
+void detect_smoke_existence();
 
 #endif /* SENSORS_H_ */

@@ -1,6 +1,7 @@
 #include "../include/webserver.h"
 #include "../include/control_page.h"
 #include "../include/leds.h"
+#include "../include/sensors.h"
 
 
 void initialize_webserver() {
@@ -135,7 +136,7 @@ void handle_control_panel_page_request(String client_id) {
 }
 
 void handle_fetch_sensor_data_request(String client_id) {
-    send_response(client_id, "text/plain", "45,1,1");
+    send_response(client_id, "text/plain", String(temperature) + "," + String(smoke_detected) + "," + String(motion_detected));
 }
 
 void handle_control_leds_request(String client_id, String control_order) {

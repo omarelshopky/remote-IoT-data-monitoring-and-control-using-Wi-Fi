@@ -1,5 +1,7 @@
 #include "../include/sensors.h"
 
+unsigned char temperature = 0;
+bool smoke_detected = false, motion_detected = true;
 
 void initialize_sensors() {
     initialize_temperature_sensor();
@@ -18,21 +20,22 @@ void initialize_smoke_sensor() {
 }
 
 void initialize_motion_sensor() {
-    // TODO: Ahmed
-    // Should use interrupt for data read
+    EIMSK = (1 << INT0); // Enable INT0 interrupt
+    EICRA = (1 << ISC00); // Falling edge trigger
+    sei();
 }
 
-unsigned char read_temperature() {
+void read_temperature() {
     // TODO: Eslam & Nabeel
-    return 45;
+    temperature = 45;
 }
 
-bool detect_smoke_existence() {
+void detect_smoke_existence() {
     // TODO: Eslam & Nabeel
-    return false;
+    smoke_detected = true;
 }
 
-bool detect_motion_existence() {
-    // TODO: Ahmed
-    return true;
+// Detect motion existence
+ISR(INT0_vect) {
+    motion_detected = !motion_detected;
 }

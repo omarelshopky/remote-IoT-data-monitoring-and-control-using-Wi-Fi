@@ -18,9 +18,8 @@ void run_device() {
 }
 
 ISR(TIMER1_COMPA_vect) {
-	unsigned char temperature = read_temperature();
-	bool smoke_detected = detect_smoke_existence();
-	bool motion_detected = detect_motion_existence();
+	read_temperature();
+	detect_smoke_existence();
 
 	display_sensors_data(temperature, smoke_detected, motion_detected);
 }
