@@ -36,5 +36,6 @@ String prepare_response(String content_type, String content);
 void send_response(String response);
 void handle_control_panel_page_request(String client_id);
 void handle_fetch_sensor_data_request(String client_id);
+void handle_control_leds_request(String client_id, String control_order);
 
 #endif /* WEBSERVER_H_ */

@@ -1,5 +1,6 @@
 #include "../include/webserver.h"
 #include "../include/control_page.h"
+#include "../include/leds.h"
 
 
 void initialize_webserver() {
@@ -26,6 +27,9 @@ void handle_clients() {
 
             if (path == "/") {
                 handle_control_panel_page_request(client_id);
+            }
+            else if (path.indexOf("/leds") != -1) {
+                handle_control_leds_request(client_id, path);
             }
             else if (path == "/fetch") {
                 handle_fetch_sensor_data_request(client_id);
@@ -132,4 +136,19 @@ void handle_control_panel_page_request(String client_id) {
 
 void handle_fetch_sensor_data_request(String client_id) {
     send_response(client_id, "text/plain", "45,1,1");
+}
+
+void handle_control_leds_request(String client_id, String control_order) {
+    bool is_turn_on_order = control_order.indexOf("turn_on") != -1 ? true : false;
+
+    switch(control_order[6]) {
+        case '1':
+            switch_led(FIRST_LED, is_turn_on_order ? TURN_ON : TURN_OFF);
+            break;
+        case '2':
+            switch_led(SECOND_LED, is_turn_on_order ? TURN_ON : TURN_OFF);
+            break;
+    }
+
+    send_response(client_id, "text/plain", "Done");
 }

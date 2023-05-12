@@ -15,8 +15,6 @@ void initialize_device() {
 
 void run_device() {
 	handle_clients();
-	switch_led(FIRST_LED, TURN_ON);
-	switch_led(SECOND_LED, TURN_ON);
 }
 
 ISR(TIMER1_COMPA_vect) {
