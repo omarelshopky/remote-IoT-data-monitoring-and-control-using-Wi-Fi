@@ -13,20 +13,21 @@
 #define TEMPERATURE_SENSOR_PIN 0    // A0
 #define SMOKE_SENSOR_PIN 1          // A1
 #define MOTION_SENSOR_PIN INT0      // D2
+#define SMOKE_DETECTION_LIMIT 400
 
 /*
  * Globals
  */
-extern unsigned char temperature;
+extern float temperature;
 extern bool smoke_detected, motion_detected;
 
 /*
  * Function definitions
  */
 void initialize_sensors();
-void initialize_temperature_sensor();
-void initialize_smoke_sensor();
+void initialize_adc();
 void initialize_motion_sensor();
+float analog_read(unsigned char pin_num);
 void read_temperature();
 void detect_smoke_existence();
 

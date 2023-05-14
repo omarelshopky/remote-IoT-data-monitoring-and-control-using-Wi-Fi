@@ -1,22 +1,17 @@
 #include "../include/sensors.h"
+#include <Arduino.h>
 
-unsigned char temperature = 0;
+float temperature = 0;
 bool smoke_detected = false, motion_detected = true;
 
 void initialize_sensors() {
-    initialize_temperature_sensor();
-    initialize_smoke_sensor();
+    initialize_adc();
     initialize_motion_sensor();
 }
 
-void initialize_temperature_sensor() {
-    // TODO: Eslam & Nabeel
-    // Should use ADC for data read
-}
-
-void initialize_smoke_sensor() {
-    // TODO: Eslam & Nabeel
-    // Should use ADC for data read
+void initialize_adc() {
+    ADMUX |= (1 << REFS0); // Vref = Vcc
+    ADCSRA |= (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0) | (1 << ADEN); // set prescaller 128 and enable ADC
 }
 
 void initialize_motion_sensor() {
@@ -25,14 +20,21 @@ void initialize_motion_sensor() {
     sei();
 }
 
+float analog_read(unsigned char pin_num) {
+    ADMUX |= pin_num;
+    ADCSRA |= (1 << ADSC);
+
+    while (ADCSRA & (1 << ADIF) == 0);
+
+    return ADC; // ADCH:ADCL
+}
+
 void read_temperature() {
-    // TODO: Eslam & Nabeel
-    temperature = 45;
+    temperature = (analog_read(TEMPERATURE_SENSOR_PIN) * (500.0 / 1024.0)) / 10.0;
 }
 
 void detect_smoke_existence() {
-    // TODO: Eslam & Nabeel
-    smoke_detected = true;
+    smoke_detected = (analog_read(SMOKE_SENSOR_PIN) > SMOKE_DETECTION_LIMIT);
 }
 
 // Detect motion existence

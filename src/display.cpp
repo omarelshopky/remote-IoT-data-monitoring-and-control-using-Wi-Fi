@@ -21,7 +21,7 @@ void print_init_message() {
 	lcd.print("Initializing...");
 }
 
-void display_sensors_data(unsigned char temperature, bool smoke_detected, bool motion_detected) {
+void display_sensors_data(float temperature, bool smoke_detected, bool motion_detected) {
 	lcd.clear();
 	lcd.print("Temp: ");
 	lcd.print(temperature);
