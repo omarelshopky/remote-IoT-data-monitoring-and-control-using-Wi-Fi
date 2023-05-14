@@ -114,6 +114,7 @@
 		<script src='https://cdn.jsdelivr.net/npm/chart.js'></script>
 
 		<script>
+			let isWaiting = false;
 			const UPDATE_INTERVAL = 1000 * 2; // 2 Ms
 			const MAX_DATA_SET_LENGTH = 15;
 			const ServerFetchSensorsEndpoint = '/fetch';
@@ -143,6 +144,9 @@
 				chart.update();
 			};
 			setInterval(async () => {
+				if (isWaiting) { return; };
+				isWaiting = true;
+
 				const rawResponse = await fetch(ServerFetchSensorsEndpoint, { method: 'GET' });
 				const response = await rawResponse.text();
 				const [temperature, smoke, motion] = response.split(',').map((entry) => parseInt(entry));
@@ -156,6 +160,11 @@
 
 				if (temperature > 30) showAlert('Warning! Temperature value exceeded 30 degrees!!');
 				if (smoke) showAlert('Warning! An existence of smoke detected!!');
+
+				let record=pop();
+				while(record){await InformServer(record.ledId,record.command);record=pop();}
+
+				isWaiting = false;
 			}, UPDATE_INTERVAL);
 
 			const showAlert = (message) => {
@@ -167,6 +176,10 @@
 			}
 		</script>
 		<script>
+			const queue=[];const seen=new Set();
+			const push=(ledId,command)=>{const key=`${ledId}-${command}`;if(!seen.has(key)){queue.push({ledId,command});seen.add(key);}}
+			const pop=()=>{const record=queue.shift();if(record){seen.delete(`${record.ledId}-${record.command}`);}return record;};
+
 			const LedStates = { On: 'ON', Off: 'OFF' };
 			const AppState = { 'Led-1': LedStates.On, 'Led-2': LedStates.On };
 
@@ -181,10 +194,12 @@
 					if (!dataset['name'] || !AppState[dataset['name']])
 						return console.error('No Reference To State Found Or Found With Wrong key');
 					const newState = InvertState(AppState[dataset['name']]);
-					await InformServer(
-						dataset['name'].split('-').pop(),
-						AppState[dataset['name']] === LedStates.Off ? 'turn_on' : 'turn_off'
-					);
+
+					const ledId = dataset['name'].split('-').pop();
+					const command = AppState[dataset['name']] === LedStates.Off ? 'turn_on' : 'turn_off';
+					if(isWaiting)push(ledId,command);
+					else await InformServer(ledId,command);
+
 					AppState[dataset['name']] = newState;
 					if (newState === LedStates.Off) this.classList.replace('btn-success', 'btn-danger');
 					else this.classList.replace('btn-danger', 'btn-success');
