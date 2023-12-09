@@ -1,4 +1,5 @@
 #include "../include/sensors.h"
+#include "../include/display.h"
 #include <Arduino.h>
 
 float temperature = 0;
@@ -40,4 +41,6 @@ void detect_smoke_existence() {
 // Detect motion existence
 ISR(INT0_vect) {
     motion_detected = !motion_detected;
+
+    display_sensors_data(temperature, smoke_detected, motion_detected);
 }
